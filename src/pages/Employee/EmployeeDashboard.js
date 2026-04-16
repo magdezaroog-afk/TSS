@@ -291,7 +291,7 @@ const EmployeeDashboard = () => {
                                 <button onClick={() => setIsChatOpen(false)} style={{ background: 'transparent', border: 'none', color: '#fff', cursor: 'pointer' }}><X size={16} /></button>
                             </div>
                             <div style={styles.chatBody}>
-                                <div style={styles.msgBot}>مرحباً {userData?.displayName?.split(' ') [0] || 'بك'}! كيف يمكننا مساعدتك تقنياً اليوم؟ (هذا هو الدردشة السريعة خارج التذاكر)</div>
+                                <div style={styles.msgBot}>مرحباً {userData?.displayName?.split(' ')[0] || 'بك'}! كيف يمكننا مساعدتك تقنياً اليوم؟ (هذا هو الدردشة السريعة خارج التذاكر)</div>
                                 {chatMsgs.map(m => (
                                     <div key={m.id} style={m.type === 'user' ? styles.msgUser : styles.msgBot}>
                                         {m.text}
