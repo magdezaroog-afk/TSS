@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { db } from '../../firebase';
-import { collection, query, onSnapshot, orderBy, updateDoc, doc, arrayUnion, limit, addDoc, serverTimestamp, where } from 'firebase/firestore';
+import { collection, query, onSnapshot, updateDoc, doc, arrayUnion, limit, where } from 'firebase/firestore';
 import { useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import TicketDetailsModal from '../../components/Ticket/TicketDetailsModal';
 import {
     Wrench, User, Search, LogOut, 
-    CheckCircle2, AlertCircle, ChevronLeft, X, Clock
+    CheckCircle2, X, Clock
 } from 'lucide-react';
 
 const EngineerWorkspace = () => {
@@ -17,9 +17,17 @@ const EngineerWorkspace = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedTicket, setSelectedTicket] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [engineers, setEngineers] = useState([]);
+    const [searchParams] = useSearchParams();
 
     const techLevel = userData?.techLevel || 'junior';
+
+    useEffect(() => {
+        const unsubEngs = onSnapshot(query(collection(db, "users"), where("role", "==", "engineer")), (snap) => {
+            setEngineers(snap.docs.map(d => ({ email: d.data().email, name: d.data().displayName || d.data().email.split('@')[0] })));
+        });
+        return () => unsubEngs();
+    }, []);
 
     useEffect(() => {
         if (!currentUser) return;
@@ -271,7 +279,16 @@ const EngineerWorkspace = () => {
                             <button onClick={() => setIsModalOpen(false)} style={styles.paneClose}><X size={18} /> إغلاق</button>
                         </div>
                         <div style={styles.paneContent}>
-                            <TicketDetailsModal ticket={selectedTicket} isOpen={true} onClose={() => setIsModalOpen(false)} userRole="engineer" isEmbedded={true} />
+                            <TicketDetailsModal 
+                                ticket={selectedTicket} 
+                                isOpen={true} 
+                                onClose={() => setIsModalOpen(false)} 
+                                userRole="engineer" 
+                                isEmbedded={true} 
+                                engineers={engineers}
+                                onTransfer={handleTransfer}
+                                techLevel={techLevel}
+                            />
                         </div>
                     </div>
                 )}

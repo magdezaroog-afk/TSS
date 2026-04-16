@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, Suspense, lazy } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { db } from '../../firebase';
 import { collection, query, onSnapshot, orderBy, updateDoc, doc, arrayUnion, limit, addDoc, serverTimestamp } from 'firebase/firestore';
@@ -9,8 +9,10 @@ import ReportsAnalyst from '../../components/Admin/ReportsAnalyst';
 import PerformanceReport from '../../components/Admin/PerformanceReport';
 import {
     BarChart3, AlertCircle, Users, Building2, Search, 
-    LogOut, UserCircle, ChevronLeft, X, Zap, Globe, MessageSquare
+    LogOut, ChevronLeft, X, Zap, Globe, MessageSquare
 } from 'lucide-react';
+
+const Spline = lazy(() => import('@splinetool/react-spline'));
 
 const DeptHeadDashboard = () => {
     const { currentUser, userData, logout } = useAuth();
@@ -249,18 +251,17 @@ const DeptHeadDashboard = () => {
                                         </div>
                                     </div>
                                     <div style={styles.planetPane}>
-                                        <div style={styles.paneLabel}><Globe size={14} /> كوكب البيانات الميداني</div>
-                                        <div style={styles.orbitalContainer}>
-                                            <div style={styles.planetCore}>
-                                                <div style={styles.planetGlow}></div>
+                                        <div style={styles.paneLabel}><Globe size={14} /> كوكب البيانات التفاعلي</div>
+                                        <div style={styles.splineWrapper}>
+                                            <Suspense fallback={<div style={styles.splineLoader}>الرجاء الانتظار...</div>}>
+                                                <Spline 
+                                                    scene="https://prod.spline.design/6Wq1Q7YGyM-iab9i/scene.splinecode" 
+                                                    style={{ width: '100%', height: '100%' }}
+                                                />
+                                            </Suspense>
+                                            <div style={styles.planetOverlay}>
                                                 <div style={styles.planetCount}>{tickets.length}</div>
                                                 <div style={styles.planetLabel}>بلاغ كلي</div>
-                                            </div>
-                                            <div style={{...styles.orbit, animationDuration: '8s'}}>
-                                                <div style={{...styles.satellite, background: 'var(--brand-orange)'}}></div>
-                                            </div>
-                                            <div style={{...styles.orbit, width: '180px', height: '180px', animationDuration: '12s', animationDirection: 'reverse'}}>
-                                                <div style={{...styles.satellite, background: 'var(--brand-blue)', width: '12px', height: '12px'}}></div>
                                             </div>
                                         </div>
                                     </div>
@@ -438,14 +439,12 @@ const styles = {
     overviewFlex: { display: 'flex', gap: '20px' },
     activityPane: { flex: 1.5, background: 'var(--bg-app)', borderRadius: 'var(--radius-lg)', padding: '20px', border: '1px solid var(--glass-border)' },
     urgentPane: { flex: 1, background: 'var(--state-danger-bg)', borderRadius: 'var(--radius-lg)', padding: '20px', border: '1px solid var(--glass-border)' },
-    planetPane: { flex: 1.2, background: 'var(--bg-app)', borderRadius: 'var(--radius-lg)', padding: '20px', border: '1px solid var(--glass-border)', overflow: 'hidden', display: 'flex', flexDirection: 'column' },
-    orbitalContainer: { flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', minHeight: '220px' },
-    planetCore: { width: '80px', height: '80px', background: 'var(--brand-blue)', borderRadius: '50%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#fff', zIndex: 5, boxShadow: '0 0 30px var(--brand-blue)' },
-    planetGlow: { position: 'absolute', width: '100px', height: '100px', background: 'var(--brand-blue)', borderRadius: '50%', filter: 'blur(30px)', opacity: 0.3 },
-    planetCount: { fontSize: '24px', fontWeight: '900' },
-    planetLabel: { fontSize: '9px', fontWeight: '800', opacity: 0.8 },
-    orbit: { position: 'absolute', width: '140px', height: '140px', border: '1px dashed var(--glass-border)', borderRadius: '50%', animation: 'rotate 10s linear infinite' },
-    satellite: { position: 'absolute', top: '0', left: '50%', width: '10px', height: '10px', borderRadius: '50%', transform: 'translate(-50%, -50%)' },
+    planetPane: { flex: 1.2, background: 'var(--bg-app)', borderRadius: 'var(--radius-lg)', padding: '20px', border: '1px solid var(--glass-border)', overflow: 'hidden', display: 'flex', flexDirection: 'column', position: 'relative' },
+    splineWrapper: { flex: 1, position: 'relative', minHeight: '220px', borderRadius: '15px', overflow: 'hidden' },
+    splineLoader: { position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', color: 'var(--text-tertiary)', fontWeight: '800' },
+    planetOverlay: { position: 'absolute', bottom: '20px', right: '20px', background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', padding: '10px 15px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.2)', textAlign: 'center', pointerEvents: 'none' },
+    planetCount: { fontSize: '20px', fontWeight: '900', color: 'var(--brand-blue)' },
+    planetLabel: { fontSize: '9px', fontWeight: '800', opacity: 0.8, color: 'var(--text-primary)' },
     paneLabel: { fontSize: '13px', fontWeight: '900', marginBottom: '15px', color: 'var(--text-primary)' },
     activityList: { display: 'flex', flexDirection: 'column', gap: '12px' },
     actItem: { display: 'flex', gap: '10px' },

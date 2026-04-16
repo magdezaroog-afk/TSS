@@ -15,6 +15,7 @@ const LoginPage = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [splineLoaded, setSplineLoaded] = useState(false);
+    const [activeMenu, setActiveMenu] = useState(null);
     const navigate = useNavigate();
     const { bypassLogin } = useAuth();
 
@@ -43,10 +44,11 @@ const LoginPage = () => {
         }
     };
 
-    const handleQuickAccess = async (role, cName, cEmail, cUid) => {
-        await bypassLogin(role, cName, cEmail, cUid);
+    const handleQuickAccess = async (role, cName, cEmail, cUid, techLevel = 'junior') => {
+        await bypassLogin(role, cName, cEmail, cUid, techLevel);
         if(role === 'admin') navigate('/admin');
         else if(role === 'engineer') navigate('/engineer');
+        else if(role === 'dept_head') navigate('/dept-head');
         else navigate('/employee');
     };
 
@@ -105,8 +107,8 @@ const LoginPage = () => {
                     <div style={styles.experimentalGrid}>
                         {/* الموظفين */}
                         <div className="exp-group" style={styles.expGroup}>
-                            <button style={styles.mainExpBtn}><User size={18} color="#F58220" /> <span>الموظفين</span></button>
-                            <div style={styles.expDropdown}>
+                            <button onClick={() => setActiveMenu(activeMenu === 'user' ? null : 'user')} style={styles.mainExpBtn}><User size={18} color="#F58220" /> <span>الموظفين</span></button>
+                            <div className={`exp-dropdown ${activeMenu === 'user' ? 'active' : ''}`} style={styles.expDropdown}>
                                 <button onClick={() => handleQuickAccess('user', 'أحمد - موظف 1', 'emp1@tss.com', 'emp_1')}>موظف 1 (أحمد)</button>
                                 <button onClick={() => handleQuickAccess('user', 'سارة - موظف 2', 'emp2@tss.com', 'emp_2')}>موظف 2 (سارة)</button>
                                 <button onClick={() => handleQuickAccess('user', 'خالد - موظف 3', 'emp3@tss.com', 'emp_3')}>موظف 3 (خالد)</button>
@@ -115,8 +117,8 @@ const LoginPage = () => {
 
                         {/* مهندس ميداني */}
                         <div className="exp-group" style={styles.expGroup}>
-                            <button style={styles.mainExpBtn}><Cpu size={18} color="#10b981" /> <span>ميداني</span></button>
-                            <div style={styles.expDropdown}>
+                            <button onClick={() => setActiveMenu(activeMenu === 'field' ? null : 'field')} style={styles.mainExpBtn}><Cpu size={18} color="#10b981" /> <span>ميداني</span></button>
+                            <div className={`exp-dropdown ${activeMenu === 'field' ? 'active' : ''}`} style={styles.expDropdown}>
                                 <button onClick={() => handleQuickAccess('engineer', 'علي - ميداني 1', 'field1@tss.com', 'field_1')}>مهندس ميداني 1</button>
                                 <button onClick={() => handleQuickAccess('engineer', 'عمر - ميداني 2', 'field2@tss.com', 'field_2')}>مهندس ميداني 2</button>
                                 <button onClick={() => handleQuickAccess('engineer', 'أيمن - ميداني 3', 'field3@tss.com', 'field_3')}>مهندس ميداني 3</button>
@@ -125,20 +127,20 @@ const LoginPage = () => {
 
                         {/* مهندس مختص */}
                         <div className="exp-group" style={styles.expGroup}>
-                            <button style={styles.mainExpBtn}><Zap size={18} color="#3b82f6" /> <span>مختص</span></button>
-                            <div style={styles.expDropdown}>
-                                <button onClick={() => handleQuickAccess('engineer', 'مروان - مختص 1', 'senior1@tss.com', 'senior_1')}>مهندس مختص 1</button>
-                                <button onClick={() => handleQuickAccess('engineer', 'هدى - مختص 2', 'senior2@tss.com', 'senior_2')}>مهندس مختص 2</button>
-                                <button onClick={() => handleQuickAccess('engineer', 'سامي - مختص 3', 'senior3@tss.com', 'senior_3')}>مهندس مختص 3</button>
+                            <button onClick={() => setActiveMenu(activeMenu === 'senior' ? null : 'senior')} style={styles.mainExpBtn}><Zap size={18} color="#3b82f6" /> <span>مختص</span></button>
+                            <div className={`exp-dropdown ${activeMenu === 'senior' ? 'active' : ''}`} style={styles.expDropdown}>
+                                <button onClick={() => handleQuickAccess('engineer', 'مروان - مختص 1', 'senior1@tss.com', 'senior_1', 'senior')}>مهندس مختص 1</button>
+                                <button onClick={() => handleQuickAccess('engineer', 'هدى - مختص 2', 'senior2@tss.com', 'senior_2', 'senior')}>مهندس مختص 2</button>
+                                <button onClick={() => handleQuickAccess('engineer', 'سامي - مختص 3', 'senior3@tss.com', 'senior_3', 'senior')}>مهندس مختص 3</button>
                             </div>
                         </div>
 
                         {/* رئيس فريق */}
-                        <div style={styles.expGroup}>
-                            <button style={styles.mainExpBtn}><Terminal size={18} color="#8b5cf6" /> <span>رئيس فريق</span></button>
-                            <div style={styles.expDropdown}>
-                                <button onClick={() => handleQuickAccess('engineer', 'رائد - فريق 1', 'lead1@tss.com', 'lead_1')}>رئيس فريق 1</button>
-                                <button onClick={() => handleQuickAccess('engineer', 'جمال - فريق 2', 'lead2@tss.com', 'lead_2')}>رئيس فريق 2</button>
+                        <div className="exp-group" style={styles.expGroup}>
+                            <button onClick={() => setActiveMenu(activeMenu === 'lead' ? null : 'lead')} style={styles.mainExpBtn}><Terminal size={18} color="#8b5cf6" /> <span>رئيس فريق</span></button>
+                            <div className={`exp-dropdown ${activeMenu === 'lead' ? 'active' : ''}`} style={styles.expDropdown}>
+                                <button onClick={() => handleQuickAccess('engineer', 'رائد - فريق 1', 'lead1@tss.com', 'lead_1', 'lead')}>رئيس فريق 1</button>
+                                <button onClick={() => handleQuickAccess('engineer', 'جمال - فريق 2', 'lead2@tss.com', 'lead_2', 'lead')}>رئيس فريق 2</button>
                             </div>
                         </div>
 
@@ -175,7 +177,7 @@ const LoginPage = () => {
                     animation: float 20s infinite ease-in-out;
                     z-index: 1;
                 }
-                .exp-group:hover .exp-dropdown {
+                .exp-dropdown.active {
                     display: flex !important;
                 }
                 .exp-dropdown button {

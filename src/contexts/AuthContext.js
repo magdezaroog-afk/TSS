@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    const bypassLogin = async (role = 'admin', customName = '', customEmail = '', customUid = '') => {
+    const bypassLogin = async (role = 'admin', customName = '', customEmail = '', customUid = '', techLevel = 'junior') => {
         setLoading(true);
         // Use stable UIDs for dev accounts to prevent duplication
         const theUid = customUid || `dev_${role}`; 
@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }) => {
             displayName: theName,
             role: role,
             status: 'active',
-            techLevel: 'junior'
+            techLevel: techLevel
         };
 
         if (existingDoc.exists()) {

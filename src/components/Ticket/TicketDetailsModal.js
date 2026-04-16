@@ -9,12 +9,12 @@ import { useAuth } from '../../contexts/AuthContext';
 import TicketRoadmap from './TicketRoadmap';
 import { toast } from 'react-toastify';
 
-const TicketDetailsModal = ({ ticket, isOpen, onClose, userRole, isEmbedded }) => {
+const TicketDetailsModal = ({ ticket, isOpen, onClose, userRole, isEmbedded, engineers, onTransfer, techLevel }) => {
     const [activeTab, setActiveTab] = useState('details'); // 'details' or 'history'
     const [comment, setComment] = useState('');
     const [rating, setRating] = useState(0);
     const [submitting, setSubmitting] = useState(false);
-    const [showFullRoadmap, setShowFullRoadmap] = useState(false);
+    const [targetEng, setTargetEng] = useState('');
 
     const { currentUser } = useAuth();
 
@@ -172,6 +172,32 @@ const TicketDetailsModal = ({ ticket, isOpen, onClose, userRole, isEmbedded }) =
                                 </div>
                             </div>
                         )}
+
+                        {userRole === 'engineer' && (techLevel === 'senior' || techLevel === 'lead') && !isClosed && (
+                            <div style={styles.transferBox}>
+                                <div style={styles.sTitle}><Share2 size={14} /> تحويل تخصصي ذكي</div>
+                                <div style={styles.transferGrid}>
+                                    <select 
+                                        style={styles.select} 
+                                        onChange={(e) => setTargetEng(e.target.value)} 
+                                        value={targetEng}
+                                    >
+                                        <option value="">اختر المهندس المكلف...</option>
+                                        {engineers?.filter(e => e.email !== currentUser.email).map(e => (
+                                            <option key={e.email} value={e.email}>{e.name}</option>
+                                        ))}
+                                    </select>
+                                    <button 
+                                        onClick={() => { onTransfer(ticket.id, targetEng); setTargetEng(''); }} 
+                                        style={styles.transferBtn}
+                                        disabled={!targetEng}
+                                    >
+                                        بدء التحويل
+                                    </button>
+                                </div>
+                                <div style={{fontSize: '10px', color: 'var(--text-tertiary)', marginTop: '8px'}}>* لن يتم التحويل الفعلي إلا بعد موافقة الطرف الآخر.</div>
+                            </div>
+                        )}
                     </>
                 ) : (
                     <div style={styles.historySection}>
@@ -268,7 +294,11 @@ const styles = {
     footer: { borderTop: '1px solid var(--glass-border)', background: 'var(--bg-sidebar)' },
     inputBox: { position: 'relative' },
     textarea: { width: '100%', height: '80px', background: 'var(--bg-app)', color: 'var(--text-primary)', border: '1px solid var(--glass-border)', borderRadius: '16px', padding: '15px 15px 15px 60px', outline: 'none', fontSize: '14px', resize: 'none' },
-    sendBtn: { position: 'absolute', left: '10px', bottom: '10px', width: '40px', height: '40px', border: 'none', borderRadius: '10px', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }
+    sendBtn: { position: 'absolute', left: '10px', bottom: '10px', width: '40px', height: '40px', border: 'none', borderRadius: '10px', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+    transferBox: { marginTop: '30px', padding: '20px', background: 'var(--bg-surface)', borderRadius: '16px', border: '1px solid var(--brand-blue)', borderStyle: 'dashed' },
+    transferGrid: { display: 'flex', gap: '10px', marginTop: '10px' },
+    select: { flex: 1, padding: '10px', borderRadius: '10px', border: '1px solid var(--glass-border)', background: 'var(--bg-app)', color: 'var(--text-primary)', outline: 'none' },
+    transferBtn: { padding: '10px 20px', background: 'var(--brand-blue)', color: '#fff', border: 'none', borderRadius: '10px', fontWeight: '800', cursor: 'pointer', fontSize: '12px' }
 };
 
 export default TicketDetailsModal;

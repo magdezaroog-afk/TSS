@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import {
     Settings, Users, Shield, Activity, 
     LogOut, UserPlus, Search, ShieldCheck, 
-    Smartphone, Database, Globe, LifeBuoy, Palette
+    Smartphone, Database, Globe, LifeBuoy
 } from 'lucide-react';
 
 const AdminDashboard = () => {
@@ -125,6 +125,38 @@ const AdminDashboard = () => {
         }
     };
 
+    const handleSeedUsers = async () => {
+        if (!window.confirm("سيقوم هذا الإجراء بإنشاء كافة المستخدمين التجريبيين (موظف 1-3، مهندس 1-3، إلخ) في قاعدة البيانات. هل تود الاستمرار؟")) return;
+        try {
+            const batch = writeBatch(db);
+            const demoUsers = [
+                { uid: 'emp_1', email: 'emp1@tss.com', displayName: 'أحمد - موظف 1', role: 'user', status: 'active' },
+                { uid: 'emp_2', email: 'emp2@tss.com', displayName: 'سارة - موظف 2', role: 'user', status: 'active' },
+                { uid: 'emp_3', email: 'emp3@tss.com', displayName: 'خالد - موظف 3', role: 'user', status: 'active' },
+                { uid: 'field_1', email: 'field1@tss.com', displayName: 'علي - ميداني 1', role: 'engineer', techLevel: 'junior', status: 'active' },
+                { uid: 'field_2', email: 'field2@tss.com', displayName: 'عمر - ميداني 2', role: 'engineer', techLevel: 'junior', status: 'active' },
+                { uid: 'field_3', email: 'field3@tss.com', displayName: 'أيمن - ميداني 3', role: 'engineer', techLevel: 'junior', status: 'active' },
+                { uid: 'senior_1', email: 'senior1@tss.com', displayName: 'مروان - مختص 1', role: 'engineer', techLevel: 'senior', status: 'active' },
+                { uid: 'senior_2', email: 'senior2@tss.com', displayName: 'هدى - مختص 2', role: 'engineer', techLevel: 'senior', status: 'active' },
+                { uid: 'senior_3', email: 'senior3@tss.com', displayName: 'سامي - مختص 3', role: 'engineer', techLevel: 'senior', status: 'active' },
+                { uid: 'lead_1', email: 'lead1@tss.com', displayName: 'رائد - فريق 1', role: 'engineer', techLevel: 'lead', status: 'active' },
+                { uid: 'lead_2', email: 'lead2@tss.com', displayName: 'جمال - فريق 2', role: 'engineer', techLevel: 'lead', status: 'active' },
+                { uid: 'lead_3', email: 'lead3@tss.com', displayName: 'سامر - فريق 3', role: 'engineer', techLevel: 'lead', status: 'active' },
+                { uid: 'dh_main', email: 'dept.head@tss.com', displayName: 'مدير الإدارة', role: 'dept_head', status: 'active' }
+            ];
+
+            demoUsers.forEach(user => {
+                const userRef = doc(db, "users", user.uid);
+                batch.set(userRef, { ...user, createdAt: new Date() }, { merge: true });
+            });
+
+            await batch.commit();
+            toast.success("تم توليد كافة المستخدمين التجريبيين بنجاح!");
+        } catch (e) {
+            toast.error("فشل توليد المستخدمين");
+        }
+    };
+
     const [sysConfig, setSysConfig] = useState({ appName: 'TechTrack LITC', logoUrl: '' });
     const handleSaveConfig = async () => {
         try {
@@ -208,7 +240,10 @@ const AdminDashboard = () => {
                                 <h2 style={styles.h2}>إدارة الهوية والوصول (IAM)</h2>
                                 <div style={{display: 'flex', gap: '10px'}}>
                                     <button onClick={handleReset} style={styles.btnClean} title="تنظيف كافة المكررات والبيانات القديمة">
-                                        <Database size={14} /> تنظيف الحسابات المكررة
+                                        <Database size={14} /> تنظيف الحسابات 
+                                    </button>
+                                    <button onClick={handleSeedUsers} style={{...styles.btnPrimary, background: '#8b5cf6'}}>
+                                        <UserPlus size={14} /> توليد المستخدمين التجريبيين
                                     </button>
                                     <button style={styles.btnPrimary}><UserPlus size={14} /> إضافة مستخدم</button>
                                 </div>

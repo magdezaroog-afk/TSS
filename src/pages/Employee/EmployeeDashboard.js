@@ -6,13 +6,13 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import TicketCard from '../../components/Ticket/TicketCard';
 import TicketDetailsModal from '../../components/Ticket/TicketDetailsModal';
 import { 
-    LayoutGrid, History, ShieldAlert, MonitorSmartphone, BookOpen, 
+    LayoutGrid, History, BookOpen, 
     Search, Bell, LogOut, Plus, Activity, UserCircle, Target, MessageCircle, 
-    CheckCircle, AlertTriangle, ShieldCheck, X
+    ShieldCheck, X
 } from 'lucide-react';
 
 const EmployeeDashboard = () => {
-    const { currentUser, logout, userRole, userData } = useAuth();
+    const { currentUser, logout, userData } = useAuth();
     const navigate = useNavigate();
     const [tickets, setTickets] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -20,7 +20,7 @@ const EmployeeDashboard = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [activeTab, setActiveTab] = useState('active'); 
     const [searchQuery, setSearchQuery] = useState('');
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
     const [isChatOpen, setIsChatOpen] = useState(false);
     const [chatMsgs, setChatMsgs] = useState([]);
     const [newMsg, setNewMsg] = useState("");
