@@ -5,7 +5,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { 
     ShieldCheck, User, Lock, Mail, 
-    Zap, Terminal, Cpu, Globe, Rocket
+    Zap, Terminal, Cpu, Globe, Rocket, Settings
 } from 'lucide-react';
 
 const Spline = lazy(() => import('@splinetool/react-spline'));
@@ -100,20 +100,58 @@ const LoginPage = () => {
                     </button>
                 </form>
 
-                <div style={styles.devEntrySection}>
-                    <div style={styles.devLabel}>بوابة الوصول السريع (بوابة المطورين)</div>
-                    <div style={styles.devGrid}>
-                        <button onClick={() => handleQuickAccess('admin')} style={styles.devBtn}>
-                            <ShieldCheck size={20} color="#005C84" />
-                            <span>المسؤول</span>
+                <div style={styles.experimentalSection}>
+                    <div style={styles.devLabel}>الأزرار التجريبية لمستخدمي النظام (Experimental Access)</div>
+                    <div style={styles.experimentalGrid}>
+                        {/* الموظفين */}
+                        <div className="exp-group" style={styles.expGroup}>
+                            <button style={styles.mainExpBtn}><User size={18} color="#F58220" /> <span>الموظفين</span></button>
+                            <div style={styles.expDropdown}>
+                                <button onClick={() => handleQuickAccess('user', 'أحمد - موظف 1', 'emp1@tss.com', 'emp_1')}>موظف 1 (أحمد)</button>
+                                <button onClick={() => handleQuickAccess('user', 'سارة - موظف 2', 'emp2@tss.com', 'emp_2')}>موظف 2 (سارة)</button>
+                                <button onClick={() => handleQuickAccess('user', 'خالد - موظف 3', 'emp3@tss.com', 'emp_3')}>موظف 3 (خالد)</button>
+                            </div>
+                        </div>
+
+                        {/* مهندس ميداني */}
+                        <div className="exp-group" style={styles.expGroup}>
+                            <button style={styles.mainExpBtn}><Cpu size={18} color="#10b981" /> <span>ميداني</span></button>
+                            <div style={styles.expDropdown}>
+                                <button onClick={() => handleQuickAccess('engineer', 'علي - ميداني 1', 'field1@tss.com', 'field_1')}>مهندس ميداني 1</button>
+                                <button onClick={() => handleQuickAccess('engineer', 'عمر - ميداني 2', 'field2@tss.com', 'field_2')}>مهندس ميداني 2</button>
+                                <button onClick={() => handleQuickAccess('engineer', 'أيمن - ميداني 3', 'field3@tss.com', 'field_3')}>مهندس ميداني 3</button>
+                            </div>
+                        </div>
+
+                        {/* مهندس مختص */}
+                        <div className="exp-group" style={styles.expGroup}>
+                            <button style={styles.mainExpBtn}><Zap size={18} color="#3b82f6" /> <span>مختص</span></button>
+                            <div style={styles.expDropdown}>
+                                <button onClick={() => handleQuickAccess('engineer', 'مروان - مختص 1', 'senior1@tss.com', 'senior_1')}>مهندس مختص 1</button>
+                                <button onClick={() => handleQuickAccess('engineer', 'هدى - مختص 2', 'senior2@tss.com', 'senior_2')}>مهندس مختص 2</button>
+                                <button onClick={() => handleQuickAccess('engineer', 'سامي - مختص 3', 'senior3@tss.com', 'senior_3')}>مهندس مختص 3</button>
+                            </div>
+                        </div>
+
+                        {/* رئيس فريق */}
+                        <div style={styles.expGroup}>
+                            <button style={styles.mainExpBtn}><Terminal size={18} color="#8b5cf6" /> <span>رئيس فريق</span></button>
+                            <div style={styles.expDropdown}>
+                                <button onClick={() => handleQuickAccess('engineer', 'رائد - فريق 1', 'lead1@tss.com', 'lead_1')}>رئيس فريق 1</button>
+                                <button onClick={() => handleQuickAccess('engineer', 'جمال - فريق 2', 'lead2@tss.com', 'lead_2')}>رئيس فريق 2</button>
+                            </div>
+                        </div>
+
+                        {/* رئيس القسم */}
+                        <button onClick={() => handleQuickAccess('dept_head', 'مدير الإدارة', 'dept.head@tss.com', 'dh_main')} style={styles.soloExpBtn}>
+                            <Globe size={18} color="#005C84" />
+                            <span>رئيس القسم</span>
                         </button>
-                        <button onClick={() => handleQuickAccess('user')} style={styles.devBtn}>
-                            <User size={20} color="#F58220" />
-                            <span>الموظف</span>
-                        </button>
-                        <button onClick={() => handleQuickAccess('engineer', 'المهندس سالم', 'salem.it@litc.ly', 'eng_salem')} style={styles.devBtn}>
-                            <Cpu size={20} color="#10b981" />
-                            <span>المهندس</span>
+
+                        {/* مسؤول النظام */}
+                        <button onClick={() => handleQuickAccess('admin', 'مسؤول النظام', 'admin@tss.com', 'admin_1')} style={{...styles.soloExpBtn, background: 'var(--brand-orange)', color: '#fff'}}>
+                            <Settings size={18} color="#fff" />
+                            <span>الإدارة</span>
                         </button>
                     </div>
                 </div>
@@ -137,6 +175,15 @@ const LoginPage = () => {
                     animation: float 20s infinite ease-in-out;
                     z-index: 1;
                 }
+                .exp-group:hover .exp-dropdown {
+                    display: flex !important;
+                }
+                .exp-dropdown button {
+                    background: transparent; border: none; padding: 10px; text-align: right;
+                    font-size: 11px; font-weight: 800; cursor: pointer; color: #475569;
+                    border-bottom: 1px solid #f1f5f9; transition: 0.2s;
+                }
+                .exp-dropdown button:hover { background: #f8fafc; color: #005C84; }
                 `}
             </style>
         </div>
@@ -158,10 +205,13 @@ const styles = {
     iIcon: { position: 'absolute', right: '20px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' },
     input: { width: '100%', padding: '16px 20px 16px 50px', background: 'rgba(255,255,255,0.7)', borderRadius: '18px', border: '1px solid #e2e8f0', outline: 'none', fontSize: '14px', fontWeight: 'bold', color: '#1e293b' },
     loginBtn: { padding: '18px', background: 'linear-gradient(135deg, #005C84, #003e5c)', color: '#fff', border: 'none', borderRadius: '20px', fontSize: '15px', fontWeight: '900', cursor: 'pointer', boxShadow: '0 15px 30px rgba(0,92,132,0.2)', marginBottom: '35px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' },
-    devEntrySection: { borderTop: '1px solid #f1f5f9', paddingTop: '30px', textAlign: 'center' },
-    devLabel: { fontSize: '10px', fontWeight: '900', color: '#94a3b8', marginBottom: '20px', letterSpacing: '1px' },
-    devGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '15px' },
-    devBtn: { background: '#fff', border: '1px solid #f1f5f9', padding: '15px 10px', borderRadius: '25px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', cursor: 'pointer', transition: '0.3s', fontSize: '11px', fontWeight: '800', color: '#475569' },
+    experimentalSection: { borderTop: '1px solid #f1f5f9', paddingTop: '30px', textAlign: 'center' },
++   devLabel: { fontSize: '10px', fontWeight: '900', color: '#94a3b8', marginBottom: '20px', letterSpacing: '1px' },
+    experimentalGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' },
+    expGroup: { position: 'relative' },
+    mainExpBtn: { width: '100%', background: '#fff', border: '1px solid #f1f5f9', padding: '12px 5px', borderRadius: '15px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px', cursor: 'pointer', fontSize: '10px', fontWeight: '800', color: '#475569' },
+    expDropdown: { position: 'absolute', bottom: '100%', left: 0, width: '140px', background: '#fff', borderRadius: '12px', boxShadow: '0 10px 30px rgba(0,0,0,0.1)', display: 'none', flexDirection: 'column', zIndex: 100, border: '1px solid #f1f5f9', overflow: 'hidden' },
+    soloExpBtn: { background: '#fff', border: '1px solid #f1f5f9', padding: '12px 5px', borderRadius: '15px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px', cursor: 'pointer', fontSize: '10px', fontWeight: '800', color: '#475569' },
     footer: { marginTop: '40px' },
     footerP: { fontSize: '10px', color: '#94a3b8', margin: '0 0 15px 0', fontWeight: '700' },
     versionTag: { display: 'inline-block', padding: '6px 18px', background: '#f1f5f9', color: '#005C84', fontSize: '9px', fontWeight: '900', borderRadius: '50px', letterSpacing: '1px' }
