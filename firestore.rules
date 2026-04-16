@@ -1,0 +1,57 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper Functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+    
+    function isAdmin() {
+      return isSignedIn() && (getUserData().role == 'admin' || getUserData().role == 'super_admin');
+    }
+    
+    function isEngineer() {
+      return isSignedIn() && getUserData().role == 'engineer';
+    }
+    
+    function isUser() {
+      return isSignedIn() && getUserData().role == 'user';
+    }
+
+    // [Users Collection]
+    // Only users can read their own data, but Admins and Engineers can read all users
+    match /users/{userId} {
+      allow read: if isSignedIn() && (request.auth.uid == userId || isAdmin() || isEngineer());
+      allow create: if isSignedIn() && request.auth.uid == userId;
+      allow update: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow delete: if isAdmin();
+    }
+
+    // [Tickets Collection]
+    match /tickets/{ticketId} {
+      allow read: if isSignedIn() && (
+        isAdmin() || isEngineer() || 
+        resource.data.userId == request.auth.uid || 
+        resource.data.userEmail == request.auth.token.email
+      );
+      allow create: if isSignedIn();
+      allow update: if isSignedIn();
+      allow delete: if isAdmin();
+    }
+
+    // [Support Chats]
+    match /support_chats/{chatId} {
+      allow read: if isSignedIn() && (isAdmin() || isEngineer() || getUserData().role == 'dept_head' || resource.data.userEmail == request.auth.token.email);
+      allow create: if isSignedIn();
+    }
+
+    // [Activities & Notifications]
+    match /activities/{id} { allow read, write: if isSignedIn(); }
+    match /notifications/{id} { allow read, write: if isSignedIn(); }
+  }
+}
