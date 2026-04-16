@@ -160,7 +160,7 @@ const EmployeeDashboard = () => {
                         <h1 style={{ fontSize: '28px', fontWeight: '900', color: 'var(--brand-blue)', margin: '0 0 8px 0', letterSpacing: '-0.5px' }}>
                             أهلاً بك، {userData?.displayName?.split(' ')[0] || 'في LITC'}
                         </h1>
-                        <p style={{ fontSize: '15px', color: 'var(--text-tertiary)', margin: 0, fontWeight: '500' }}>لنقم بحل مشاكلك التقنية بفاعلية وسرعة.</p>
+                        <p style={{ fontSize: '15px', color: 'var(--text-tertiary)', margin: 0, fontWeight: '500' }}>مرحباً بك في نظام TSS المطور. نحن هنا لخدمتكم.</p>
                     </div>
                     
                     <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
