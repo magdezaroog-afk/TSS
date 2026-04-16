@@ -206,7 +206,7 @@ const styles = {
     input: { width: '100%', padding: '16px 20px 16px 50px', background: 'rgba(255,255,255,0.7)', borderRadius: '18px', border: '1px solid #e2e8f0', outline: 'none', fontSize: '14px', fontWeight: 'bold', color: '#1e293b' },
     loginBtn: { padding: '18px', background: 'linear-gradient(135deg, #005C84, #003e5c)', color: '#fff', border: 'none', borderRadius: '20px', fontSize: '15px', fontWeight: '900', cursor: 'pointer', boxShadow: '0 15px 30px rgba(0,92,132,0.2)', marginBottom: '35px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' },
     experimentalSection: { borderTop: '1px solid #f1f5f9', paddingTop: '30px', textAlign: 'center' },
-+   devLabel: { fontSize: '10px', fontWeight: '900', color: '#94a3b8', marginBottom: '20px', letterSpacing: '1px' },
+    devLabel: { fontSize: '10px', fontWeight: '900', color: '#94a3b8', marginBottom: '20px', letterSpacing: '1px' },
     experimentalGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' },
     expGroup: { position: 'relative' },
     mainExpBtn: { width: '100%', background: '#fff', border: '1px solid #f1f5f9', padding: '12px 5px', borderRadius: '15px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px', cursor: 'pointer', fontSize: '10px', fontWeight: '800', color: '#475569' },
