@@ -7,7 +7,7 @@ import TicketCard from '../../components/Ticket/TicketCard';
 import TicketDetailsModal from '../../components/Ticket/TicketDetailsModal';
 import { 
     LayoutGrid, History,
-    Search, Bell, LogOut, Plus, Activity, UserCircle, Target, MessageCircle, 
+    Search, LogOut, Plus, UserCircle, Target, MessageCircle, 
     X
 } from 'lucide-react';
 
@@ -161,22 +161,6 @@ const EmployeeDashboard = () => {
                         <p style={{ fontSize: '15px', color: 'var(--text-tertiary)', margin: 0, fontWeight: '500' }}>مرحباً بك في نظام TSS المطور. نحن هنا لخدمتكم.</p>
                     </div>
                     
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                        <div style={{ position: 'relative', width: '320px' }}>
-                            <input 
-                                type="text" 
-                                placeholder="ابحث برقم التذكرة أو الكلمات المفتاحية..." 
-                                className="premium-search"
-                                onChange={e => setSearchQuery(e.target.value)}
-                            />
-                            <Search size={18} style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-tertiary)' }} />
-                            <div style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', background: '#e2e8f0', padding: '4px 8px', borderRadius: '4px', fontSize: '10px', fontWeight: '800', color: '#64748b' }}>CTRL K</div>
-                        </div>
-                        
-                        <button className="flex-center neo-card" style={{ width: '46px', height: '46px', borderRadius: '50%', cursor: 'pointer', border: 'none', position: 'relative' }}>
-                            <Bell size={20} color="var(--text-secondary)" />
-                            <span style={{ position: 'absolute', top: '10px', right: '12px', width: '8px', height: '8px', background: 'var(--brand-orange)', borderRadius: '50%' }}></span>
-                        </button>
                     </div>
                 </header>
 
