@@ -100,33 +100,7 @@ const TicketDetailsModal = ({ ticket, isOpen, onClose, userRole, isEmbedded, eng
                     </div>
                 )}
 
-                {/* Modern Status Banner */}
-                <div style={{ 
-                    ...styles.banner, 
-                    background: isClosed ? '#ecfdf5' : (isUrgent ? '#fef2f2' : '#f0f9ff'),
-                    color: isClosed ? '#059669' : (isUrgent ? '#dc2626' : '#0284c7'),
-                    border: `1px solid ${isClosed ? '#10b98120' : (isUrgent ? '#ef444420' : '#005C8420')}`
-                }}>
-                    {isClosed ? <CheckCircle2 size={20} /> : (isUrgent ? <AlertTriangle size={20} /> : <Info size={20} />)}
-                    <div style={styles.bText}>
-                        <div style={styles.bLabel}>الحالة التشغيلية</div>
-                        <div style={styles.bVal}>{ticket.status}</div>
-                    </div>
-                    {!isClosed && (
-                        <div style={{ marginRight: 'auto', textAlign: 'left' }}>
-                            <div style={styles.bLabel}>اتفاقية مستوى الخدمة (SLA)</div>
-                            <div style={{...styles.bVal, color: isUrgent ? '#dc2626' : '#0284c7'}}>
-                                {(() => {
-                                    const created = ticket.createdAt?.toDate ? ticket.createdAt.toDate() : new Date(ticket.createdAt);
-                                    const diffHrs = (new Date() - created) / (1000 * 60 * 60);
-                                    const limit = isUrgent ? 4 : 24;
-                                    const remaining = limit - diffHrs;
-                                    return remaining > 0 ? `متبقي ${Math.ceil(remaining)} ساعة` : 'تم تجاوز الوقت المحدد';
-                                })()}
-                            </div>
-                        </div>
-                    )}
-                </div>
+                {/* Removed Operational Status Banner as requested */}
 
                 {/* Tab Switcher */}
                 <div style={styles.tabNav}>
@@ -148,11 +122,21 @@ const TicketDetailsModal = ({ ticket, isOpen, onClose, userRole, isEmbedded, eng
                                 </div>
                             </div>
                             <div style={styles.infoCard}>
-                                <Briefcase size={18} color="#64748b" strokeWidth={1.5} />
+                                <AlertTriangle size={18} color={isUrgent ? 'var(--state-danger-text)' : '#64748b'} strokeWidth={1.5} />
                                 <div style={styles.mText}>
-                                    <div style={styles.mLabel}>الإدارة الطالبة</div>
-                                    <div style={styles.mVal}>{ticket.targetDepartment || 'إدارة الصيانة'}</div>
+                                    <div style={styles.mLabel}>الأولوية / الاستعجال</div>
+                                    <div style={{...styles.mVal, color: isUrgent ? 'var(--state-danger-text)' : 'inherit'}}>
+                                        {ticket.urgency === 'high' ? 'عاجل جداً' : (ticket.urgency === 'medium' ? 'متوسط' : 'عادي')}
+                                    </div>
                                 </div>
+                            </div>
+                        </div>
+                        
+                        <div style={styles.infoCard, {marginBottom: '30px', width: '100%', display: 'flex', alignItems: 'center', gap: '12px'}}>
+                            <Briefcase size={18} color="#64748b" strokeWidth={1.5} />
+                            <div style={styles.mText}>
+                                <div style={styles.mLabel}>الإدارة المعنية</div>
+                                <div style={styles.mVal}>{ticket.targetDepartment || 'إدارة الصيانة'}</div>
                             </div>
                         </div>
 
@@ -165,6 +149,15 @@ const TicketDetailsModal = ({ ticket, isOpen, onClose, userRole, isEmbedded, eng
                             <div style={{...styles.mLabel, marginBottom: '10px'}}>وصف الحالة التقني:</div>
                             <div style={styles.descriptionText}>{ticket.description || 'لا يوجد وصف إضافي'}</div>
                         </div>
+
+                        {ticket.comments && ticket.comments.length > 0 && (
+                            <div style={{...styles.descriptionBox, background: 'var(--bg-surface)', borderStyle: 'dashed'}}>
+                                <div style={{...styles.mLabel, marginBottom: '10px', color: 'var(--brand-blue)'}}>آخر ملاحظة فنية:</div>
+                                <div style={{...styles.descriptionText, fontSize: '12px'}}>
+                                    <b>{ticket.comments[ticket.comments.length-1].author}:</b> {ticket.comments[ticket.comments.length-1].text}
+                                </div>
+                            </div>
+                        )}
 
                         {ticket.hasAttachment && (
                             <div style={styles.attachmentCard}>

@@ -130,7 +130,11 @@ const EmployeeDashboard = () => {
                         <span>الأرشيف والتاريخ</span>
                     </button>
                     
-                    <button style={styles.navBtn}>
+                    <button onClick={() => setActiveTab('kb')} style={{ 
+                        ...styles.navBtn, 
+                        background: activeTab === 'kb' ? 'rgba(255,255,255,0.1)' : 'transparent',
+                        color: activeTab === 'kb' ? '#fff' : 'rgba(255,255,255,0.6)'
+                    }}>
                         <BookOpen size={18} /> <span>قاعدة المعرفة (KB)</span>
                     </button>
                 </nav>
@@ -194,22 +198,22 @@ const EmployeeDashboard = () => {
                                         <h2 style={{ fontSize: '22px', fontWeight: '900', color: '#fff', marginBottom: '8px' }}>مركز العمليات التقنية (HUB)</h2>
                                         <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.8)', marginBottom: '20px' }}>مرحباً بك في المنطقة المؤمنة. يمكنك فتح بلاغ جديد أو متابعة حالة الأنظمة المركزية لـ LITC.</p>
                                         <button className="btn-premium" style={{ background: '#fff', color: 'var(--brand-blue)', width: 'fit-content' }} onClick={() => navigate('/employee/create')}>
-                                            <Plus size={18} /> فتح تذكرة دعم فني
+                                            <Plus size={18} /> فتح طلب مخصص (LITC HUB)
                                         </button>
                                     </div>
                                     <div style={styles.healthStats}>
                                         <div style={styles.healthItem}>
                                           <ShieldCheck size={20} color="#10b981" />
                                           <div>
-                                            <div style={{fontSize: '10px', color: 'rgba(255,255,255,0.5)'}}>حالة السيرفرات</div>
-                                            <div style={{fontSize: '12px', fontWeight: '800', color: '#fff'}}>مستقر (99.9%)</div>
+                                            <div style={{fontSize: '10px', color: 'rgba(255,255,255,0.5)'}}>حالة السيرفرات المركزية</div>
+                                            <div style={{fontSize: '12px', fontWeight: '800', color: '#fff'}}>نشط (Online)</div>
                                           </div>
                                         </div>
                                         <div style={styles.healthItem}>
                                           <Activity size={20} color="#f59e0b" />
                                           <div>
-                                            <div style={{fontSize: '10px', color: 'rgba(255,255,255,0.5)'}}>زخم البلاغات</div>
-                                            <div style={{fontSize: '12px', fontWeight: '800', color: '#fff'}}>متوسط</div>
+                                            <div style={{fontSize: '10px', color: 'rgba(255,255,255,0.5)'}}>زخم البلاغات الحالي</div>
+                                            <div style={{fontSize: '12px', fontWeight: '800', color: '#fff'}}>مستقر (Low Momentum)</div>
                                           </div>
                                         </div>
                                     </div>
@@ -217,40 +221,53 @@ const EmployeeDashboard = () => {
                             </div>
                         )}
 
-                        {/* Smart Ticket Feed */}
+                        {/* Smart Ticket Feed / KB Section */}
                         <div className="stagger-3" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                            <div className="flex-between" style={{ marginBottom: '24px' }}>
-                                <div>
-                                    <h2 style={{ fontSize: '18px', fontWeight: '800', margin: '0 0 4px 0' }}>لوحة التتبع (Ticket Feed)</h2>
-                                    <p style={{ fontSize: '13px', color: 'var(--text-tertiary)', margin: 0 }}>مراقبة البلاغات في الوقت الفعلي</p>
-                                </div>
-                                {!isModalOpen && (
-                                    <button className="btn-premium" onClick={() => navigate('/employee/create')}>
-                                        <Plus size={18} /> فتح طلب مخصص
-                                    </button>
-                                )}
-                            </div>
-                            
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                                {loading ? (
-                                    <div style={{ textAlign: 'center', padding: '80px 0', color: 'var(--text-tertiary)', fontWeight: '600' }}>مزامنة بروتوكول LITC ...</div>
-                                ) : filteredTickets.length > 0 ? (
-                                    filteredTickets.map((ticket, index) => (
-                                        <div key={ticket.id} style={{ animationDelay: `${index * 0.05}s` }} className="scale-in">
-                                            <TicketCard 
-                                                ticket={ticket} 
-                                                onClick={() => { setSelectedTicket(ticket); setIsModalOpen(true); }} 
-                                            />
+                            {activeTab === 'kb' ? (
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                                    {['إعدادات الـ Outlook', 'تغيير كلمة مرور الويندوز', 'طريقة طلب حبر للطابعة', 'إعدادات شبكة الـ VPN'].map(item => (
+                                        <div key={item} className="neo-card" style={{ padding: '25px', display: 'flex', alignItems: 'center', gap: '15px' }}>
+                                            <div style={{ width: '40px', height: '40px', background: 'var(--brand-blue)10', color: 'var(--brand-blue)', borderRadius: '10px' }} className="flex-center"><BookOpen size={20} /></div>
+                                            <div style={{ fontWeight: '800', fontSize: '14px' }}>{item}</div>
                                         </div>
-                                    ))
-                                ) : (
-                                    <div className="flex-center neo-card" style={{ flexDirection: 'column', padding: '80px 0', color: 'var(--text-tertiary)' }}>
-                                        <LayoutGrid size={48} color="var(--brand-accent)" style={{ opacity: 0.2, marginBottom: '24px' }} />
-                                        <div style={{ fontWeight: '800', fontSize: '18px', color: 'var(--text-primary)' }}>النظام مستقر تماماً</div>
-                                        <div style={{ fontSize: '14px', marginTop: '8px' }}>لا توجد أي معوقات تقنية مسجلة حالياً.</div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <>
+                                    <div className="flex-between" style={{ marginBottom: '24px' }}>
+                                        <div>
+                                            <h2 style={{ fontSize: '18px', fontWeight: '800', margin: '0 0 4px 0' }}>لوحة تتبع الطلبات المخصصة</h2>
+                                            <p style={{ fontSize: '13px', color: 'var(--text-tertiary)', margin: 0 }}>مراقبة العمليات في الوقت الفعلي</p>
+                                        </div>
+                                        {!isModalOpen && (
+                                            <button className="btn-premium" onClick={() => navigate('/employee/create')}>
+                                                <Plus size={18} /> فتح طلب جديد
+                                            </button>
+                                        )}
                                     </div>
-                                )}
-                            </div>
+                                    
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                                        {loading ? (
+                                            <div style={{ textAlign: 'center', padding: '80px 0', color: 'var(--text-tertiary)', fontWeight: '600' }}>مزامنة بروتوكول LITC ...</div>
+                                        ) : filteredTickets.length > 0 ? (
+                                            filteredTickets.map((ticket, index) => (
+                                                <div key={ticket.id} style={{ animationDelay: `${index * 0.05}s` }} className="scale-in">
+                                                    <TicketCard 
+                                                        ticket={ticket} 
+                                                        onClick={() => { setSelectedTicket(ticket); setIsModalOpen(true); }} 
+                                                    />
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <div className="flex-center neo-card" style={{ flexDirection: 'column', padding: '80px 0', color: 'var(--text-tertiary)' }}>
+                                                <LayoutGrid size={48} color="var(--brand-accent)" style={{ opacity: 0.2, marginBottom: '24px' }} />
+                                                <div style={{ fontWeight: '800', fontSize: '18px', color: 'var(--text-primary)' }}>لا توجد طلبات حالياً</div>
+                                                <div style={{ fontSize: '14px', marginTop: '8px' }}>جميع العمليات التقنية تعمل بكفاءة.</div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </div>
 

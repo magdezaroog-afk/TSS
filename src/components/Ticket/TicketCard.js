@@ -49,8 +49,15 @@ const TicketCard = ({ ticket, onClick }) => {
                         </h3>
                     </div>
                     
-                    <div style={{ background: status.bg, color: status.color, padding: '6px 14px', borderRadius: '99px', fontSize: '12px', fontWeight: '800' }}>
-                        {status.label}
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                        {isUrgent && (
+                            <div style={{ background: 'var(--state-danger-bg)', color: 'var(--state-danger-text)', padding: '4px 10px', borderRadius: '99px', fontSize: '10px', fontWeight: '900', border: '1px solid var(--state-danger-text)' }}>
+                                URGENT
+                            </div>
+                        )}
+                        <div style={{ background: status.bg, color: status.color, padding: '6px 14px', borderRadius: '99px', fontSize: '12px', fontWeight: '800' }}>
+                            {status.label}
+                        </div>
                     </div>
                 </div>
 
