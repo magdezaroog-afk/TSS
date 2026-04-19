@@ -9,10 +9,8 @@ import ReportsAnalyst from '../../components/Admin/ReportsAnalyst';
 import PerformanceReport from '../../components/Admin/PerformanceReport';
 import {
     BarChart3, AlertCircle, Users, Building2, Search, 
-    LogOut, ChevronLeft, X, Zap, Globe, MessageSquare
+    LogOut, ChevronLeft, X, MessageSquare
 } from 'lucide-react';
-
-const Spline = lazy(() => import('@splinetool/react-spline'));
 
 const DeptHeadDashboard = () => {
     const { currentUser, userData, logout } = useAuth();
@@ -237,31 +235,40 @@ const DeptHeadDashboard = () => {
 
                                 <div style={styles.overviewFlex}>
                                     <div style={styles.activityPane}>
-                                        <div style={styles.paneLabel}><Zap size={14} /> النشاط الميداني</div>
+                                        <div style={styles.paneLabel}><Zap size={14} /> النشاط العملياتي الموحد</div>
                                         <div style={styles.activityList}>
-                                            {activities.map(act => (
-                                                <div key={act.id} style={styles.actItem}>
-                                                    <div style={styles.actDot}></div>
-                                                    <div style={styles.actBody}>
-                                                        <div style={styles.actText}><b>{act.user}</b> {act.action}</div>
-                                                        <div style={styles.actTime}>{act.timestamp?.toDate ? new Date(act.timestamp.toDate()).toLocaleTimeString('ar-LY') : 'الآن'}</div>
+                                            {activities.length === 0 ? (
+                                                <div style={{textAlign: 'center', padding: '40px', color: 'var(--text-tertiary)'}}>بانتظار وصول إشارات جديدة...</div>
+                                            ) : (
+                                                activities.map(act => (
+                                                    <div key={act.id} style={styles.actItem}>
+                                                        <div style={styles.actDot}></div>
+                                                        <div style={styles.actBody}>
+                                                            <div style={styles.actText}><b>{act.user}</b> {act.action}</div>
+                                                            <div style={styles.actTime}>{act.timestamp?.toDate ? new Date(act.timestamp.toDate()).toLocaleTimeString('ar-LY') : 'الآن'}</div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            ))}
+                                                ))
+                                            )}
                                         </div>
                                     </div>
                                     <div style={styles.planetPane}>
-                                        <div style={styles.paneLabel}><Globe size={14} /> كوكب البيانات التفاعلي</div>
+                                        <div style={styles.paneLabel}><BarChart3 size={14} /> التوزيع الجغرافي والتقني</div>
                                         <div style={styles.splineWrapper}>
-                                            <Suspense fallback={<div style={styles.splineLoader}>الرجاء الانتظار...</div>}>
-                                                <Spline 
-                                                    scene="https://prod.spline.design/6Wq1Q7YGyM-iab9i/scene.splinecode" 
-                                                    style={{ width: '100%', height: '100%' }}
-                                                />
-                                            </Suspense>
+                                            <div style={{padding: '20px', display: 'flex', flexDirection: 'column', gap: '15px'}}>
+                                                {['كم4', 'مبنى الشط', 'مبنى السياحية'].map(loc => (
+                                                    <div key={loc} style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                                                        <span style={{fontSize: '12px', fontWeight: '800'}}>{loc}</span>
+                                                        <div style={{flex: 1, height: '6px', background: 'var(--bg-app)', margin: '0 15px', borderRadius: '10px', overflow: 'hidden'}}>
+                                                            <div style={{width: `${(tickets.filter(t=>t.building===loc).length / (tickets.length || 1)) * 100}%`, height: '100%', background: 'var(--brand-blue)'}}></div>
+                                                        </div>
+                                                        <span style={{fontSize: '11px', fontWeight: '900', color: 'var(--brand-blue)'}}>{tickets.filter(t=>t.building===loc).length}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
                                             <div style={styles.planetOverlay}>
                                                 <div style={styles.planetCount}>{tickets.length}</div>
-                                                <div style={styles.planetLabel}>بلاغ كلي</div>
+                                                <div style={styles.planetLabel}>إجمالي البلاغات</div>
                                             </div>
                                         </div>
                                     </div>
@@ -441,7 +448,6 @@ const styles = {
     urgentPane: { flex: 1, background: 'var(--state-danger-bg)', borderRadius: 'var(--radius-lg)', padding: '20px', border: '1px solid var(--glass-border)' },
     planetPane: { flex: 1.2, background: 'var(--bg-app)', borderRadius: 'var(--radius-lg)', padding: '20px', border: '1px solid var(--glass-border)', overflow: 'hidden', display: 'flex', flexDirection: 'column', position: 'relative' },
     splineWrapper: { flex: 1, position: 'relative', minHeight: '220px', borderRadius: '15px', overflow: 'hidden' },
-    splineLoader: { position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', color: 'var(--text-tertiary)', fontWeight: '800' },
     planetOverlay: { position: 'absolute', bottom: '20px', right: '20px', background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', padding: '10px 15px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.2)', textAlign: 'center', pointerEvents: 'none' },
     planetCount: { fontSize: '20px', fontWeight: '900', color: 'var(--brand-blue)' },
     planetLabel: { fontSize: '9px', fontWeight: '800', opacity: 0.8, color: 'var(--text-primary)' },
@@ -452,8 +458,6 @@ const styles = {
     actBody: { flex: 1 },
     actText: { fontSize: '12px', color: 'var(--text-secondary)' },
     actTime: { fontSize: '10px', color: 'var(--text-tertiary)', fontWeight: '800' },
-    urgentItem: { background: 'var(--bg-surface)', padding: '12px', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', marginBottom: '10px', border: '1px solid var(--glass-border)', cursor: 'pointer', transition: '0.3s' },
-    urgentTitle: { fontWeight: '800', fontSize: '12px', color: 'var(--text-primary)' },
     engGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '15px' },
     engCard: { padding: '20px', background: 'var(--bg-surface)', borderRadius: '16px', border: '1px solid var(--glass-border)', boxShadow: 'var(--shadow-card)' },
     engInfo: { display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '15px' },

@@ -5,15 +5,18 @@ import { collection, query, onSnapshot, updateDoc, doc, arrayUnion, limit, where
 import { useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import TicketDetailsModal from '../../components/Ticket/TicketDetailsModal';
+import PerformanceReport from '../../components/Admin/PerformanceReport';
+import ReportsAnalyst from '../../components/Admin/ReportsAnalyst';
 import {
     Wrench, User, Search, LogOut, 
-    CheckCircle2, X, Clock
+    CheckCircle2, X, Clock, BarChart3
 } from 'lucide-react';
 
 const EngineerWorkspace = () => {
     const { currentUser, userData, logout } = useAuth();
     const [tickets, setTickets] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [activeTab, setActiveTab] = useState('tasks'); // 'tasks', 'archive', 'reports'
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedTicket, setSelectedTicket] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -134,9 +137,15 @@ const EngineerWorkspace = () => {
         } catch (e) { toast.error("فشل تنفيذ الإجراء"); }
     };
 
-    const filteredTickets = tickets.filter(t => 
-        (t.subCategory + t.description).toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const filteredTickets = tickets.filter(t => {
+        const matchesSearch = (t.subCategory + t.description).toLowerCase().includes(searchQuery.toLowerCase());
+        const isCompleted = t.status === 'مكتمل' || t.status === 'Closed';
+        if (activeTab === 'tasks') return matchesSearch && !isCompleted;
+        if (activeTab === 'archive') return matchesSearch && isCompleted;
+        return matchesSearch;
+    });
+
+    const activeCount = tickets.filter(t => t.status !== 'مكتمل' && t.status !== 'Closed').length;
 
     return (
         <div style={styles.page}>
@@ -168,6 +177,19 @@ const EngineerWorkspace = () => {
                     <div style={styles.msItem}><span>{tickets.length}</span> مهمة</div>
                     <div style={styles.msItem}><span>{tickets.filter(t=>t.status==='مكتمل').length}</span> تم</div>
                 </div>
+
+                <nav style={styles.nav}>
+                    <button onClick={() => setActiveTab('tasks')} style={{...styles.navBtn, color: activeTab === 'tasks' ? 'var(--brand-blue)' : 'var(--text-secondary)'}}>
+                        <Clock size={16} /> <span>المهام الحالية</span>
+                        {activeCount > 0 && <span style={styles.badge}>{activeCount}</span>}
+                    </button>
+                    <button onClick={() => setActiveTab('archive')} style={{...styles.navBtn, color: activeTab === 'archive' ? 'var(--brand-blue)' : 'var(--text-secondary)'}}>
+                        <CheckCircle2 size={16} /> <span>الأرشيف التقني</span>
+                    </button>
+                    <button onClick={() => setActiveTab('reports')} style={{...styles.navBtn, color: activeTab === 'reports' ? 'var(--brand-blue)' : 'var(--text-secondary)'}}>
+                        <BarChart3 size={16} /> <span>تقارير الأداء</span>
+                    </button>
+                </nav>
 
                 <button onClick={logout} style={styles.logoutBtn}>
                     <LogOut size={14} /> خروج آمن
@@ -206,6 +228,13 @@ const EngineerWorkspace = () => {
                 <div style={styles.dynamicGrid}>
                     {loading ? (
                         <div style={styles.loading}>جاري التحميل...</div>
+                    ) : activeTab === 'reports' ? (
+                        <div style={{gridColumn: '1 / -1', background: 'var(--bg-surface)', padding: '30px', borderRadius: '20px', border: '1px solid var(--glass-border)'}}>
+                            <PerformanceReport tickets={tickets} engineers={engineers} techLevel={techLevel} />
+                            <div style={{marginTop: '30px', borderTop: '1px solid var(--glass-border)', paddingTop: '30px'}}>
+                                <ReportsAnalyst tickets={tickets} engineers={engineers} />
+                            </div>
+                        </div>
                     ) : (
                         filteredTickets.map(t => (
                             <div key={t.id} onClick={() => { setSelectedTicket(t); setIsModalOpen(true); }} style={{...styles.card, borderTop: `4px solid ${t.urgency === 'high' ? 'var(--state-danger-text)' : 'var(--glass-border)'}`}}>
@@ -219,7 +248,7 @@ const EngineerWorkspace = () => {
                                     <span style={styles.timeTag}><Clock size={12}/> {new Date(t.createdAt?.toDate?.() || t.createdAt).toLocaleDateString('ar-LY')}</span>
                                 </div>
                                 <h3 style={styles.title}>{t.subCategory}</h3>
-                                {techLevel === 'lead' && <div style={styles.leadAssignee}>المهندس: {t.assignedTo?.split('@')[0] || 'غير مسند'}</div>}
+                                {techLevel === 'lead' && <div style={styles.leadAssignee}>المكلف: {t.assignedTo?.split('@')[0] || 'بانتظار الإسناد'}</div>}
                                 <div style={styles.meta}>
                                     <div style={styles.metaIcon}><User size={12}/> {t.userName}</div>
                                     <div style={{...styles.metaIcon, color: t.status === 'مكتمل' ? 'var(--state-success-text)' : 'var(--brand-orange)'}}><CheckCircle2 size={12}/> {t.status}</div>
@@ -232,11 +261,11 @@ const EngineerWorkspace = () => {
                                     </div>
                                 ) : (
                                     <div style={{display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '15px'}}>
-                                        {t.status !== 'مكتمل' && (
+                                        {t.status !== 'مكتمل' && (t.assignedTo === currentUser.email) && (
                                             <button onClick={(e) => { e.stopPropagation(); handleAction(e, t.id, 'مكتمل'); }} style={{...styles.btnDone, flex: 1}}>إتمام المهمة</button>
                                         )}
                                         {techLevel === 'lead' && !t.assignedTo && (
-                                            <button onClick={(e) => { e.stopPropagation(); handleSelfAssign(t.id); }} style={{...styles.btnDone, flex: 1, background: 'var(--brand-orange)'}}>سحب المهمة</button>
+                                            <button onClick={(e) => { e.stopPropagation(); handleSelfAssign(t.id); }} style={{...styles.btnDone, flex: 1, background: 'var(--brand-orange)'}}>إسناد إلي</button>
                                         )}
                                     </div>
                                 )}
@@ -310,6 +339,9 @@ const styles = {
     uRole: { fontSize: '11px', color: 'var(--text-tertiary)' },
     miniStats: { display: 'flex', gap: '10px', marginBottom: '20px' },
     msItem: { flex: 1, padding: '10px', background: 'var(--glass-border)', borderRadius: '10px', textAlign: 'center', fontSize: '11px', fontWeight: '800', color: 'var(--text-primary)' },
+    nav: { display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '20px' },
+    navBtn: { display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 15px', borderRadius: '12px', border: 'none', background: 'transparent', cursor: 'pointer', textAlign: 'right', fontWeight: '800', fontSize: '14px', transition: '0.2s', width: '100%', position: 'relative' },
+    badge: { position: 'absolute', left: '10px', background: 'var(--brand-orange)', color: '#fff', fontSize: '10px', padding: '2px 6px', borderRadius: '20px' },
     logoutBtn: { marginTop: 'auto', width: '100%', padding: '12px', borderRadius: '12px', border: '1px solid var(--state-danger-bg)', background: 'transparent', color: 'var(--state-danger-text)', fontWeight: '800', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: '0.3s' },
     main: { flex: 1, padding: '40px', position: 'relative' },
     header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' },

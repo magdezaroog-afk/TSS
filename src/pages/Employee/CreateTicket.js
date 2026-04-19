@@ -252,7 +252,7 @@ const CreateTicket = () => {
 };
 
 const styles = {
-    page: { minHeight: '100vh', background: '#f8fafc', position: 'relative', overflow: 'hidden', padding: '60px 0', direction: 'rtl', fontFamily: "'Cairo', sans-serif" },
+    page: { minHeight: '100vh', background: 'var(--bg-app)', position: 'relative', overflow: 'hidden', padding: '60px 0', direction: 'rtl', fontFamily: "'Cairo', sans-serif" },
     glow1: { position: 'absolute', top: '-15%', left: '-10%', width: '600px', height: '600px', background: 'radial-gradient(circle, rgba(0, 92, 132, 0.1) 0%, transparent 70%)' },
     glow2: { position: 'absolute', bottom: '-15%', right: '-10%', width: '800px', height: '800px', background: 'radial-gradient(circle, rgba(245, 130, 32, 0.08) 0%, transparent 70%)' },
     container: { maxWidth: '950px', margin: '0 auto', padding: '0 25px', position: 'relative', zIndex: 10 },
@@ -265,33 +265,32 @@ const styles = {
     frame: { display: 'flex', flexDirection: 'column', gap: '35px' },
     intro: { textAlign: 'center' },
     tag: { background: 'rgba(0, 92, 132, 0.1)', color: '#005C84', padding: '6px 16px', borderRadius: '50px', fontSize: '11px', fontWeight: '900', display: 'inline-block', marginBottom: '15px' },
-    h1: { fontSize: '36px', fontWeight: '900', color: '#1e293b', margin: 0 },
-    grid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px' },
-    catCard: { padding: '30px 20px', background: '#fff', border: '1px solid #f1f5f9', borderRadius: '30px', display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'center', cursor: 'pointer', transition: '0.3s' },
+    h1: { fontSize: '36px', fontWeight: '900', color: 'var(--text-primary)', margin: 0 },
+    catCard: { padding: '30px 20px', background: 'var(--bg-surface)', border: '1px solid var(--glass-border)', borderRadius: '30px', display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'center', cursor: 'pointer', transition: '0.3s' },
     iconBox: { width: '60px', height: '60px', borderRadius: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px' },
-    catLabel: { fontWeight: '900', color: '#334155', fontSize: '12px', textAlign: 'center' },
+    catLabel: { fontWeight: '900', color: 'var(--text-primary)', fontSize: '12px', textAlign: 'center' },
     slabHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '30px', borderBottom: '1px solid #f1f5f9' },
     hIcon: { fontSize: '32px' },
-    hTitle: { fontSize: '24px', fontWeight: '900', color: '#1e293b', margin: 0 },
-    backBtn: { background: 'none', border: 'none', color: '#005C84', fontWeight: 'bold', cursor: 'pointer' },
+    hTitle: { fontSize: '24px', fontWeight: '900', color: 'var(--text-primary)', margin: 0 },
+    backBtn: { background: 'none', border: 'none', color: 'var(--brand-blue)', fontWeight: 'bold', cursor: 'pointer' },
     formGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' },
     pickerCont: { position: 'relative', display: 'flex', flexDirection: 'column', gap: '15px' },
-    label: { fontSize: '15px', fontWeight: '900', color: '#475569', display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' },
-    trigger: { padding: '20px 25px', background: '#fff', borderRadius: '20px', border: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', transition: '0.2s', fontWeight: 'bold', color: '#1e293b' },
+    label: { fontSize: '15px', fontWeight: '900', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' },
+    trigger: { padding: '20px 25px', background: 'var(--bg-app)', borderRadius: '20px', border: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', transition: '0.2s', fontWeight: 'bold', color: 'var(--text-primary)' },
     chevron: { color: '#005C84', transition: '0.4s' },
     waveOverlay: { position: 'absolute', top: '105%', left: 0, width: '100%', zIndex: 1000 },
     waveScroll: { maxHeight: '300px', overflowY: 'auto' },
     indicator: { width: '8px', height: '8px', borderRadius: '50%', background: '#F58220', opacity: 0.5 },
     field: { display: 'flex', flexDirection: 'column', gap: '10px' },
-    textarea: { padding: '25px', borderRadius: '30px', background: '#fff', border: '1px solid #e2e8f0', minHeight: '140px', resize: 'none', outline: 'none', fontSize: '15px' },
+    textarea: { padding: '25px', borderRadius: '30px', background: 'var(--bg-app)', border: '1px solid var(--glass-border)', color: 'var(--text-primary)', minHeight: '140px', resize: 'none', outline: 'none', fontSize: '15px' },
     urgencySection: { display: 'flex', flexDirection: 'column', gap: '15px' },
     pillarsContainer: { display: 'flex', gap: '20px', alignItems: 'flex-end', padding: '20px 0' },
     pillar: { flex: 1, borderRadius: '22px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: '0.5s' },
     pLabel: { fontSize: '16px', fontWeight: '900' },
     pDesc: { fontSize: '9px', fontWeight: 'bold', letterSpacing: '2px' },
     botRow: { display: 'flex', justifyContent: 'flex-end', marginTop: '10px' },
-    fileLab: { padding: '14px 28px', borderRadius: '50px', border: '2px solid', background: '#fff', display: 'flex', alignItems: 'center', gap: '12px', fontSize: '13px', fontWeight: '900', cursor: 'pointer' },
-    sendBtn: { width: '100%', padding: '25px', background: 'linear-gradient(135deg, #005C84, #002e42)', color: '#fff', border: 'none', borderRadius: '35px', fontSize: '20px', fontWeight: '900', boxShadow: '0 20px 50px rgba(0,92,132,0.2)', cursor: 'pointer' }
+    fileLab: { padding: '14px 28px', borderRadius: '50px', border: '2px solid', background: 'var(--bg-surface)', display: 'flex', alignItems: 'center', gap: '12px', fontSize: '13px', fontWeight: '900', cursor: 'pointer' },
+    sendBtn: { width: '100%', padding: '25px', background: 'linear-gradient(135deg, var(--brand-blue), #002e42)', color: '#fff', border: 'none', borderRadius: '35px', fontSize: '20px', fontWeight: '900', boxShadow: '0 20px 50px rgba(0,92,132,0.2)', cursor: 'pointer' }
 };
 
 export default CreateTicket;

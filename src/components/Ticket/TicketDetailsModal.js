@@ -10,7 +10,7 @@ import TicketRoadmap from './TicketRoadmap';
 import { toast } from 'react-toastify';
 
 const TicketDetailsModal = ({ ticket, isOpen, onClose, userRole, isEmbedded, engineers, onTransfer, techLevel }) => {
-    const [activeTab, setActiveTab] = useState('details'); // 'details' or 'history'
+    const [activeTab, setActiveTab] = useState('details'); // 'details', 'history', 'internal_chat'
     const [comment, setComment] = useState('');
     const [rating, setRating] = useState(0);
     const [submitting, setSubmitting] = useState(false);
@@ -143,18 +143,33 @@ const TicketDetailsModal = ({ ticket, isOpen, onClose, userRole, isEmbedded, eng
                             <div style={styles.infoCard}>
                                 <Building2 size={18} color="#64748b" strokeWidth={1.5} />
                                 <div style={styles.mText}>
-                                    <div style={styles.mLabel}>المبنى</div>
+                                    <div style={styles.mLabel}>المبنى / الموقع</div>
                                     <div style={styles.mVal}>{ticket.building || 'LITC SITE'}</div>
                                 </div>
                             </div>
                             <div style={styles.infoCard}>
                                 <Briefcase size={18} color="#64748b" strokeWidth={1.5} />
                                 <div style={styles.mText}>
-                                    <div style={styles.mLabel}>الإدارة</div>
+                                    <div style={styles.mLabel}>الإدارة الطالبة</div>
                                     <div style={styles.mVal}>{ticket.targetDepartment || 'إدارة الصيانة'}</div>
                                 </div>
                             </div>
                         </div>
+
+                        <div style={styles.descriptionBox}>
+                            <div style={{...styles.mLabel, marginBottom: '10px'}}>وصف الحالة التقني:</div>
+                            <div style={styles.descriptionText}>{ticket.description || 'لا يوجد وصف إضافي'}</div>
+                        </div>
+
+                        {ticket.hasAttachment && (
+                            <div style={styles.attachmentCard}>
+                                <Paperclip size={16} color="var(--brand-blue)" />
+                                <div>
+                                    <div style={{fontSize: '11px', fontWeight: '800'}}>المرفقات الفنية:</div>
+                                    <div style={{fontSize: '10px', color: 'var(--text-tertiary)'}}>{ticket.attachmentName || 'ملف مرفق'}</div>
+                                </div>
+                            </div>
+                        )}
 
                         {isClosed && (
                             <div style={styles.ratingCard}>
@@ -298,7 +313,10 @@ const styles = {
     transferBox: { marginTop: '30px', padding: '20px', background: 'var(--bg-surface)', borderRadius: '16px', border: '1px solid var(--brand-blue)', borderStyle: 'dashed' },
     transferGrid: { display: 'flex', gap: '10px', marginTop: '10px' },
     select: { flex: 1, padding: '10px', borderRadius: '10px', border: '1px solid var(--glass-border)', background: 'var(--bg-app)', color: 'var(--text-primary)', outline: 'none' },
-    transferBtn: { padding: '10px 20px', background: 'var(--brand-blue)', color: '#fff', border: 'none', borderRadius: '10px', fontWeight: '800', cursor: 'pointer', fontSize: '12px' }
+    transferBtn: { padding: '10px 20px', background: 'var(--brand-blue)', color: '#fff', border: 'none', borderRadius: '10px', fontWeight: '800', cursor: 'pointer', fontSize: '12px' },
+    descriptionBox: { background: 'var(--bg-app)', padding: '20px', borderRadius: '18px', border: '1px solid var(--glass-border)', marginBottom: '20px' },
+    descriptionText: { fontSize: '14px', color: 'var(--text-primary)', lineHeight: '1.6', fontWeight: '500' },
+    attachmentCard: { display: 'flex', alignItems: 'center', gap: '12px', padding: '15px', background: 'var(--bg-surface)', borderRadius: '14px', border: '1px dashed var(--brand-blue)', marginBottom: '20px' }
 };
 
 export default TicketDetailsModal;

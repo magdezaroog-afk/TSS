@@ -23,7 +23,7 @@ const TicketCard = ({ ticket, onClick }) => {
         if (isInProgress) return { color: 'var(--brand-accent)', bg: 'color-mix(in srgb, var(--brand-accent) 10%, transparent)', label: 'تحت التنفيذ' };
         if (isUrgent) return { color: 'var(--state-danger-text)', bg: 'var(--state-danger-bg)', label: 'حالة طارئة' };
         if (isWaiting) return { color: 'var(--state-warning-text)', bg: 'var(--state-warning-bg)', label: 'قيد المراجعة' };
-        return { color: 'var(--text-tertiary)', bg: '#F1F5F9', label: 'بحاجة لتصنيف' };
+        return { color: 'var(--text-tertiary)', bg: 'var(--bg-app)', label: 'بحاجة لتصنيف' };
     };
 
     const status = getStatusConfig();
@@ -34,7 +34,7 @@ const TicketCard = ({ ticket, onClick }) => {
             {/* Left Status Indicator Line */}
             <div style={{ position: 'absolute', right: 0, top: '24px', bottom: '24px', width: '4px', background: status.color, borderTopLeftRadius: '4px', borderBottomLeftRadius: '4px' }}></div>
             
-            <div className="flex-center" style={{ width: '56px', height: '56px', borderRadius: '16px', background: '#F8FAFC', color: 'var(--brand-blue)', flexShrink: 0, border: '1px solid rgba(0,0,0,0.03)' }}>
+            <div className="flex-center" style={{ width: '56px', height: '56px', borderRadius: '16px', background: 'var(--bg-app)', color: 'var(--brand-blue)', flexShrink: 0, border: '1px solid var(--glass-border)' }}>
                 {getIcon(ticket.category)}
             </div>
             
@@ -71,7 +71,7 @@ const TicketCard = ({ ticket, onClick }) => {
                             <span>{ticket.targetDepartment.substring(0, 20)}</span>
                         </div>
                     )}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginRight: 'auto', background: '#F1F5F9', padding: '6px 14px', borderRadius: '8px', color: 'var(--text-primary)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginRight: 'auto', background: 'var(--bg-app)', padding: '6px 14px', borderRadius: '8px', color: 'var(--text-primary)' }}>
                         <Clock size={14} color="var(--brand-accent)" /> 
                         <span style={{ fontSize: '12px', fontWeight: 800 }}>{formattedDate}</span>
                     </div>
