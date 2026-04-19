@@ -12,64 +12,49 @@ const TicketRoadmap = ({ ticket, mini = false }) => {
     ];
 
     const getStatusIndex = () => {
-        if (ticket.status === 'مكتمل' || ticket.status === 'Closed') return 3;
-        if (ticket.status === 'جاري العمل' || ticket.status === 'In Progress') return 2;
-        if (ticket.assignedTo) return 1;
-        return 0;
+        if (ticket.status === 'مكتمل' || ticket.status === 'Closed') return 4;
+        if (ticket.status === 'جاري العمل' || ticket.status === 'In Progress') return 3;
+        if (ticket.isTransferPending) return 2.5; // Special state for transfer
+        if (ticket.assignedTo) return 2;
+        return 1;
     };
 
     const currentIndex = getStatusIndex();
 
-    if (mini) {
-        return (
-            <div style={styles.miniContainer}>
-                {stages.map((step, index) => (
-                    <div key={step.key} style={styles.miniStepWrapper}>
-                        <div style={{
-                            ...styles.miniDot,
-                            background: index <= currentIndex ? theme.colors.primary : theme.colors.light,
-                            boxShadow: index === currentIndex ? `0 0 10px ${theme.colors.primary}44` : 'none',
-                        }}></div>
-                        {index < stages.length - 1 && (
-                            <div style={{
-                                ...styles.miniLine,
-                                background: index < currentIndex ? theme.colors.primary : theme.colors.light
-                            }}></div>
-                        )}
-                    </div>
-                ))}
-            </div>
-        );
-    }
+    const stages = [
+        { key: 1, label: 'فتح البلاغ / OPENED', sub: `بواسطة: ${ticket.userName || 'الموظف'} - موقع ${ticket.building || 'LITC'}`, icon: <FaRocket /> },
+        { key: 2, label: 'الاستلام / RECEIVED', sub: ticket.assignedTo ? `مستلم بواسطة: ${ticket.assignedTo.split('@')[0]}` : 'بانتظار استجابة فريق الدعم', icon: <FaSatellite /> },
+        { key: 3, label: 'المعالجة / PROCESSING', sub: ticket.status === 'جاري العمل' ? 'يتم العمل حالياً على طلبك' : (ticket.status === 'مكتمل' ? 'تمت المعالجة بنجاح' : 'بانتظار البدء في الفحص'), icon: <FaTerminal /> },
+        { key: 4, label: 'الإغلاق / CLOSED', sub: ticket.status === 'مكتمل' ? 'تم حل المشكلة وتوثيق الإجراء' : 'البلاغ لا يزال مفتوحاً', icon: <FaCheckDouble /> }
+    ];
 
     return (
         <div style={styles.largeContainer}>
             <div style={styles.roadmapLine}></div>
             {stages.map((step, index) => {
-                const isActive = index <= currentIndex;
-                const isCurrent = index === currentIndex;
+                const stepNum = index + 1;
+                const isActive = stepNum <= currentIndex;
+                const isCurrent = Math.floor(currentIndex) === stepNum;
 
                 return (
                     <div key={step.key} style={styles.stepItem}>
                         <div style={{
                             ...styles.iconWrapper,
-                            background: isActive ? `${theme.colors.primary}15` : '#fff',
-                            borderColor: isActive ? theme.colors.primary : theme.colors.light,
-                            color: isActive ? theme.colors.primary : theme.colors.text.pale,
+                            background: isActive ? `${theme.colors.primary}15` : 'var(--bg-app)',
+                            borderColor: isActive ? theme.colors.primary : 'var(--glass-border)',
+                            color: isActive ? theme.colors.primary : 'var(--text-tertiary)',
                             boxShadow: isCurrent ? theme.shadows.soft : 'none'
                         }}>
-                            {isActive && index < currentIndex ? <FaCheckDouble /> : step.icon}
+                            {isActive && stepNum < Math.floor(currentIndex) ? <FaCheckDouble /> : step.icon}
                         </div>
                         <div style={styles.stepInfo}>
-                            <h4 style={{ ...styles.stepLabel, color: isActive ? theme.colors.secondary : theme.colors.text.pale }}>
+                            <h4 style={{ ...styles.stepLabel, color: isActive ? 'var(--text-primary)' : 'var(--text-tertiary)' }}>
                                 {step.label}
-                                {isCurrent && <span style={styles.liveTag}>[ نشط ]</span>}
+                                {isCurrent && <span style={styles.liveTag}>[ نشط حالياً ]</span>}
                             </h4>
-                            <p style={styles.stepRole}>{step.role}</p>
-                            {isActive && (
-                                <p style={styles.stepTime}>
-                                    {index === 0 ? 'تم التسجيل' : 'تمت المزامنة'}
-                                </p>
+                            <p style={styles.stepSub}>{step.sub}</p>
+                            {ticket.isTransferPending && stepNum === 2 && (
+                                <div style={styles.transferAlert}>جاري تحويل التذكرة إلى: {ticket.transferTo?.split('@')[0]}</div>
                             )}
                         </div>
                     </div>
@@ -92,10 +77,10 @@ const styles = {
         display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', transition: '0.5s'
     },
     stepInfo: { textAlign: 'right', flex: 1 },
-    stepLabel: { margin: '0 0 5px 0', fontSize: '14px', fontWeight: '900', letterSpacing: '0.5px' },
-    liveTag: { fontSize: '10px', color: theme.colors.status.success, marginLeft: '10px', fontWeight: 'bold' },
-    stepRole: { margin: 0, fontSize: '11px', color: theme.colors.text.secondary, fontWeight: '700' },
-    stepTime: { margin: '6px 0 0 0', fontSize: '10px', color: theme.colors.primary, fontWeight: '900' }
+    stepLabel: { margin: '0 0 5px 0', fontSize: '13px', fontWeight: '900', letterSpacing: '0.5px' },
+    liveTag: { fontSize: '9px', color: 'var(--brand-orange)', marginRight: '10px', fontWeight: 'bold' },
+    stepSub: { margin: 0, fontSize: '11px', color: 'var(--text-secondary)', fontWeight: '600' },
+    transferAlert: { marginTop: '8px', padding: '6px 12px', background: 'var(--state-warning-bg)', color: 'var(--state-warning-text)', borderRadius: '8px', fontSize: '10px', fontWeight: '800' }
 };
 
 

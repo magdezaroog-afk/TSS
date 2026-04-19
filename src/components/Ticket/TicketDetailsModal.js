@@ -130,11 +130,11 @@ const TicketDetailsModal = ({ ticket, isOpen, onClose, userRole, isEmbedded, eng
 
                 {/* Tab Switcher */}
                 <div style={styles.tabNav}>
-                    <button onClick={() => setActiveTab('details')} style={{...styles.tabBtn, ...(activeTab === 'details' ? styles.tabActive : {})}}>تفاصيل البلاغ</button>
+                    <button onClick={() => setActiveTab('details')} style={{...styles.tabBtn, ...(activeTab === 'details' ? styles.tabActive : {})}}>التفاصيل والمشروع</button>
                     {(userRole === 'engineer' || userRole === 'admin' || userRole === 'dept_head') && (
-                        <button onClick={() => setActiveTab('internal_chat')} style={{...styles.tabBtn, ...(activeTab === 'internal_chat' ? styles.tabActive : {})}}>دردشة فنية داخلية</button>
+                        <button onClick={() => setActiveTab('internal_chat')} style={{...styles.tabBtn, ...(activeTab === 'internal_chat' ? styles.tabActive : {})}}>المحادثة الفنية</button>
                     )}
-                    <button onClick={() => setActiveTab('history')} style={{...styles.tabBtn, ...(activeTab === 'history' ? styles.tabActive : {})}}>سجل الإجراءات والتواصل</button>
+                    <button onClick={() => setActiveTab('history')} style={{...styles.tabBtn, ...(activeTab === 'history' ? styles.tabActive : {})}}>السجل</button>
                 </div>
 
                 {activeTab === 'details' ? (
@@ -154,6 +154,11 @@ const TicketDetailsModal = ({ ticket, isOpen, onClose, userRole, isEmbedded, eng
                                     <div style={styles.mVal}>{ticket.targetDepartment || 'إدارة الصيانة'}</div>
                                 </div>
                             </div>
+                        </div>
+
+                        <div style={styles.roadmapWrapper}>
+                            <div style={styles.sTitle}><Info size={14} /> خارطة طريق البلاغ (Roadmap)</div>
+                            <TicketRoadmap ticket={ticket} />
                         </div>
 
                         <div style={styles.descriptionBox}>
@@ -316,7 +321,8 @@ const styles = {
     transferBtn: { padding: '10px 20px', background: 'var(--brand-blue)', color: '#fff', border: 'none', borderRadius: '10px', fontWeight: '800', cursor: 'pointer', fontSize: '12px' },
     descriptionBox: { background: 'var(--bg-app)', padding: '20px', borderRadius: '18px', border: '1px solid var(--glass-border)', marginBottom: '20px' },
     descriptionText: { fontSize: '14px', color: 'var(--text-primary)', lineHeight: '1.6', fontWeight: '500' },
-    attachmentCard: { display: 'flex', alignItems: 'center', gap: '12px', padding: '15px', background: 'var(--bg-surface)', borderRadius: '14px', border: '1px dashed var(--brand-blue)', marginBottom: '20px' }
+    attachmentCard: { display: 'flex', alignItems: 'center', gap: '12px', padding: '15px', background: 'var(--bg-surface)', borderRadius: '14px', border: '1px dashed var(--brand-blue)', marginBottom: '20px' },
+    roadmapWrapper: { marginTop: '10px', padding: '20px', background: 'var(--bg-surface)', borderRadius: '20px', border: '1px solid var(--glass-border)', marginBottom: '30px' }
 };
 
 export default TicketDetailsModal;
